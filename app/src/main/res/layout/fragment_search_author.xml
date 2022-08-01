@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:foregroundTint="#FFFFFF"
+    android:foregroundTintMode="src_atop"
+    tools:context=".SearchAuthor">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme" />
+
+    <ImageView
+        android:id="@+id/btnBackAuthor"
+        android:layout_width="44dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="7dp"
+        android:layout_marginTop="7dp"
+        android:src="?attr/actionModeCloseDrawable" />
+
+    <TextView
+        android:id="@+id/txtHeaderAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center"
+        android:text="Search by Author"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/btnPreviousAuthor"
+        android:layout_width="52dp"
+        android:layout_height="45dp"
+        android:layout_alignBottom="@+id/toolbarAuthor"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="right"
+        android:layout_marginStart="311dp"
+        android:layout_marginTop="-7dp"
+        android:layout_marginEnd="46dp"
+        android:layout_marginBottom="18dp"
+        android:src="@android:drawable/ic_media_previous" />
+
+    <ImageView
+        android:id="@+id/btnNextAuthor"
+        android:layout_width="52dp"
+        android:layout_height="45dp"
+        android:layout_alignBottom="@+id/toolbarAuthor"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="right"
+        android:layout_marginStart="354dp"
+        android:layout_marginTop="-6dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="17dp"
+        android:src="@android:drawable/ic_media_next" />
+
+    <TextView
+        android:id="@+id/txtPgAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/toolbarAuthor"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="0dp"
+        android:text="Page - 0"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/inputAuthor"
+        android:layout_width="255dp"
+        android:layout_height="56dp"
+        android:layout_below="@+id/toolbarAuthor"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="3dp"
+        android:inputType="textPersonName"
+         />
+
+    <Button
+        android:id="@+id/btnSearchAuthor"
+        android:layout_width="104dp"
+        android:layout_height="56dp"
+        android:layout_below="@+id/toolbarAuthor"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="10dp"
+        android:text="Search" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp" />
+
+
+</RelativeLayout>
