@@ -6,14 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.Toast
-import androidx.fragment.app.FragmentManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.quotes.databinding.FragmentQuotesListBinding
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -24,11 +21,22 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-private var pgNum = 1
+
 class Quotes_List : Fragment() {
 
-    private val baseURL = "https://api.quotable.io"
+    var pgNum = 1
     lateinit var myAdapter: MyAdapter
+    private val baseURL = "https://api.quotable.io"
+    var limit = 20
+    var count = 0
+    var list = Data()
+    var listt: MutableList<Int> = mutableListOf()
+
+    private val retrofitBuilder = Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactory.create())
+        .baseUrl(baseURL)
+        .build()
+        .create(ApiInterface::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,107 +44,56 @@ class Quotes_List : Fragment() {
     ): View? {
 
         val bind = FragmentQuotesListBinding.inflate(layoutInflater)
-        var viewModel: ViewModel = ViewModelProviders.of(context as FragmentActivity).get(ViewModel::class.java)
         val client = OkHttpClient.Builder().build()
-        val retrofitBuilder = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(baseURL)
-            .build()
-            .create(ApiInterface::class.java)
-
+        var viewModel: ViewModel = ViewModelProviders.of(context as FragmentActivity).get(ViewModel::class.java)
         bind.btnBackList.setOnClickListener {
             val intent = Intent (this@Quotes_List.requireContext(), MainActivity::class.java)
             startActivity(intent)
-        }
-        bind.btnNextList.setOnClickListener {
-            pgNum ++
-            bind.txtPgList.text = "Page - " + pgNum.toString()
-            val retrofitData = retrofitBuilder.getData(pgNum)
-
-            retrofitData.enqueue(object : Callback<Data> {
-                override fun onResponse(call: Call<Data?>, response: Response<Data?>) {
-                    val responseBody = response.body()!!
-                    val list: MutableList<Int> = List(responseBody.count) { 0 }.toMutableList()
-                    var list_it : List<DataEntity> = listOf()
-                    list_it = viewModel.getQuotes()
-                    for(i in list_it.indices) {
-                        for (j in list.indices) {
-                            if (list_it[i].id == responseBody.results[j]._id) {
-                                list[j] = 1
-                                break
-                            }
-                        }
-                    }
-                    myAdapter = MyAdapter(this@Quotes_List.requireContext(), responseBody, list)
-                    myAdapter.notifyDataSetChanged()
-                    bind.recyclerList.adapter = myAdapter
-                }
-
-                override fun onFailure(call: Call<Data?>, t: Throwable) {
-                    pgNum --
-                    bind.txtPgList.text = "Page - " + pgNum.toString()
-                    Toast.makeText(this@Quotes_List.requireContext(), "No more pages to display!", Toast.LENGTH_SHORT).show()
-                }
-            })
-        }
-        bind.btnPreviousList.setOnClickListener {
-            if (pgNum > 1) {
-                pgNum--
-                bind.txtPgList.text = "Page - " + pgNum.toString()
-
-                val retrofitData = retrofitBuilder.getData(pgNum)
-
-                retrofitData.enqueue(object : Callback<Data> {
-                    override fun onResponse(call: Call<Data?>, response: Response<Data?>) {
-                        val responseBody = response.body()!!
-                        val list: MutableList<Int> = List(responseBody.count) { 0 }.toMutableList()
-                        var list_it : List<DataEntity> = listOf()
-                        list_it = viewModel.getQuotes()
-                        for(i in list_it.indices) {
-                            for (j in list.indices) {
-                                if (list_it[i].id == responseBody.results[j]._id) {
-                                    list[j] = 1
-                                    break
-                                }
-                            }
-                        }
-                        myAdapter = MyAdapter(this@Quotes_List.requireContext(), responseBody, list)
-                        myAdapter.notifyDataSetChanged()
-                        bind.recyclerList.adapter = myAdapter
-                    }
-
-                    override fun onFailure(call: Call<Data?>, t: Throwable) {
-                        //TODO("Not yet implemented")
-                    }
-                })
-            }
         }
 
         lateinit var linearLayoutManager: LinearLayoutManager
         bind.recyclerList.setHasFixedSize(true)
         linearLayoutManager = LinearLayoutManager(this@Quotes_List.requireContext())
         bind.recyclerList.layoutManager = linearLayoutManager
-        val retrofitData = retrofitBuilder.getData(1)
+
+        val retrofitData = retrofitBuilder.getData(pgNum)
         var list_it : List<DataEntity> = listOf()
         retrofitData.enqueue(object : Callback<Data> {
             override fun onResponse(call: Call<Data?>, response: Response<Data?>) {
+                bind.progressList.visibility = View.INVISIBLE
                 val responseBody = response.body()!!
-                val list: MutableList<Int> = List(responseBody.count) { 0 }.toMutableList()
+                for (i in responseBody.results.indices)
+                    listt += 0
                 list_it = viewModel.getQuotes()
-                    for(i in list_it.indices) {
-                        for (j in list.indices) {
-                            if (list_it[i].id == responseBody.results[j]._id) {
-                                list[j] = 1
-                                break
-                            }
+                for(i in list_it.indices) {
+                    for (j in (listt.size-responseBody.results.size) until listt.size) {
+                        if (list_it[i].id == responseBody.results[j - listt.size + responseBody.results.size]._id) {
+                            listt[j] = 1
+                            break
                         }
                     }
-                myAdapter = MyAdapter(this@Quotes_List.requireContext(), responseBody, list)
-                myAdapter.notifyDataSetChanged()
+                }
+                count = responseBody.results.size
+                list.results += responseBody.results
+                myAdapter = MyAdapter(this@Quotes_List.requireContext(), list, listt)
                 bind.recyclerList.adapter = myAdapter
+                myAdapter.notifyDataSetChanged()
             }
             override fun onFailure(call: Call<Data?>, t: Throwable) {
-                //TODO("Not yet implemented")
+                Toast.makeText(this@Quotes_List.requireContext(), "Cannot obtain quotes, try again.", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        bind.recyclerList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(1)  && count == 20 && newState==RecyclerView.SCROLL_STATE_IDLE) {
+                    bind.progressList.visibility = View.VISIBLE
+                    pgNum ++
+                    getData(pgNum, bind, viewModel)
+                }
+                else if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE)
+                    Toast.makeText(this@Quotes_List.requireContext(), "No more pages to display!", Toast.LENGTH_SHORT).show()
             }
         })
         return bind.root
@@ -146,6 +103,36 @@ class Quotes_List : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+    private fun getData(page: Int, bind: FragmentQuotesListBinding, viewModel: ViewModel) {
+        val retrofitData = retrofitBuilder.getData(page)
+        var list_it : List<DataEntity> = listOf()
+        retrofitData.enqueue(object : Callback<Data> {
+            override fun onResponse(call: Call<Data?>, response: Response<Data?>) {
+                bind.progressList.visibility = View.INVISIBLE
+                val responseBody = response.body()!!
+                for (i in responseBody.results.indices)
+                    listt += 0
+                list_it = viewModel.getQuotes()
+                for(i in list_it.indices) {
+                    for (j in (listt.size-responseBody.results.size) until listt.size) {
+                        if (list_it[i].id == responseBody.results[j - listt.size + responseBody.results.size]._id) {
+                            listt[j] = 1
+                            break
+                        }
+                    }
+                }
+                count = responseBody.results.size
+                list.results += responseBody.results
+                myAdapter.list = list
+                myAdapter.presentList = listt
+                myAdapter.notifyDataSetChanged()
+            }
+            override fun onFailure(call: Call<Data?>, t: Throwable) {
+                Toast.makeText(this@Quotes_List.requireContext(), "Cannot obtain quotes, try again.", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+    }
 
     interface ApiInterface {
         @GET("/quotes")

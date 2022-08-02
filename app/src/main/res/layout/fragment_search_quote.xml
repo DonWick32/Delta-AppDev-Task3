@@ -36,49 +36,6 @@
         android:textSize="25sp"
         android:textStyle="bold" />
 
-    <ImageView
-        android:id="@+id/btnPreviousQuote"
-        android:layout_width="52dp"
-        android:layout_height="45dp"
-        android:layout_alignBottom="@+id/toolbarQuote"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="right"
-        android:layout_marginStart="311dp"
-        android:layout_marginTop="-7dp"
-        android:layout_marginEnd="46dp"
-        android:layout_marginBottom="18dp"
-        android:src="@android:drawable/ic_media_previous" />
-
-    <ImageView
-        android:id="@+id/btnNextQuote"
-        android:layout_width="52dp"
-        android:layout_height="45dp"
-        android:layout_alignBottom="@+id/toolbarQuote"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="right"
-        android:layout_marginStart="354dp"
-        android:layout_marginTop="-6dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="17dp"
-        android:src="@android:drawable/ic_media_next" />
-
-    <TextView
-        android:id="@+id/txtPgQuote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/toolbarQuote"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="0dp"
-        android:text="Page - 0"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/inputQuote"
@@ -99,6 +56,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="10dp"
+        android:textStyle="bold"
         android:text="Search" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -106,6 +64,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="120dp" />
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbarQuote"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="730dp"
+        android:id="@+id/progressQuote"
+        android:visibility="visible"
+        android:layout_marginBottom="0dp" />
 
 
 </RelativeLayout>

@@ -6,5 +6,5 @@ data class Data(
     val page: Int = 0,
     val totalPages: Int = 0,
     val lastItemIndex: Int = 0,
-    var results: List<DataItem> = listOf<DataItem>()
+    var results: MutableList<DataItem> = mutableListOf<DataItem>()
 )

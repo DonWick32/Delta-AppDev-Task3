@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                 if (it== TextToSpeech.SUCCESS) {
                     tts.language = Locale.UK
                     tts.setSpeechRate(1.0F)
-                    tts.speak(txtQuote.text as String + " Quote by " + txtAuthor.text, TextToSpeech.QUEUE_ADD, null)
+                    tts.speak(txtQuote.text as String + " Quote by " + (txtAuthor.text as String).slice(2 until txtAuthor.text.length), TextToSpeech.QUEUE_ADD, null)
                 }
             })
         }

@@ -19,7 +19,7 @@ import kotlin.collections.ArrayList
 import kotlin.coroutines.coroutineContext
 import kotlin.properties.Delegates
 
-class MyAdapter(val context: Context, val list: Data, var present: List<Int>): RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+class MyAdapter(val context: Context, var list: Data, var present: List<Int>): RecyclerView.Adapter<MyAdapter.ViewHolder>() {
     var presentList = present.toMutableList()
     class ViewHolder(itemView: View, var present: List<Int>): RecyclerView.ViewHolder(itemView){
         var txtQuoteCard: TextView
@@ -37,16 +37,6 @@ class MyAdapter(val context: Context, val list: Data, var present: List<Int>): R
             btnFav = itemView.findViewById(R.id.btnFav)
 
         }
-        /*
-        fun bind(data: Data,checkListener: OnCheckedChangeListener)
-        {
-            txtQuoteCard = itemView.findViewById(R.id.txtQuoteCard)
-            txtAuthorCard = itemView.findViewById(R.id.txtAuthorCard)
-
-            itemView.setOnClickListener {
-                checkListener.onCheckedChanged(data)
-            }
-        }*/
 
     }
 
@@ -97,44 +87,20 @@ class MyAdapter(val context: Context, val list: Data, var present: List<Int>): R
                 viewModel.deleteQuote(quote)
                 Toast.makeText(context, "Removed from Favourites!", Toast.LENGTH_SHORT).show()
                 holder.btnFav.isChecked = false
-                presentList[position] = 0
                 val fragment: Fragment = FragmentManager.findFragment(holder.itemView)
                 if (fragment is Favourites) {
+                    list.results.removeAt(position)
+                    presentList.removeAt(position)
+                    notifyDataSetChanged()
+                    /*
                     val activity  = it.context as? AppCompatActivity
                     activity?.supportFragmentManager?.beginTransaction()
                         ?.replace(R.id.container_fragment, Favourites())?.addToBackStack(null)
-                        ?.commit()
+                        ?.commit()*/
                 }
 
             }
         }
-        /*
-        holder.btnFav.setOnCheckedChangeListener { buttonView, isChecked ->
-            var viewModel: ViewModel = ViewModelProviders.of(context as FragmentActivity).get(ViewModel::class.java)
-            val quote = DataEntity(id, list.results[position].content, list.results[position].author)
-            if (isChecked) {
-                viewModel.insertQuote(quote)
-                Toast.makeText(context, "Checked!", Toast.LENGTH_LONG).show()
-            }
-            else{
-                viewModel.deleteQuote(quote)
-                Toast.makeText(context, "Un-Checked!", Toast.LENGTH_LONG).show()
-            }
-        }*/
-
-        /*
-        viewModel.getQuotesObservers().observe(context as FragmentActivity,{
-            var list_it = it
-            for(i in list_it.indices){
-                if (list_it[i].id == list.results[position]._id) {
-                    holder.btnFav.isChecked = true
-                    break
-                }
-                else {
-                    holder.btnFav.isChecked = false
-                }
-            }
-        })*/
     }
 
     override fun getItemCount(): Int {

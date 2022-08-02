@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:textStyle="bold"
+                android:textStyle="bold|italic"
                 android:text="TextView"
                 android:textColor="?android:textColorSecondaryInverse"
                 android:paddingLeft="15dp"
